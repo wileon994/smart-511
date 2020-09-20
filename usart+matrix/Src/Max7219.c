@@ -1,0 +1,356 @@
+#include "Max7219.h" 
+#include "usart.h"
+#include "stm32l4xx_hal.h"
+#include "gpio.h"
+#include "main.h"
+#include <stdio.h>
+//uint8_t buffer[10];
+
+u8 su[1][8]={0x24,0xFF,0x10,0x7C,0x36,0x55,0x24,0x48};				// 苏
+u8 yun[1][8]={0x3C,0x00,0x7E,0x11,0x25,0x42,0x7D,0x00};				// 云
+u8 jing[1][8]={0x10,0xFE,0x7C,0x44,0x7C,0x38,0xD6,0x30};			// 京
+u8 chuan[1][8]={0x22,0x2A,0x2A,0x2A,0x2A,0x2A,0x4A,0x82};			// 川
+
+u8 x_zhao[1][8]={0x20,0xF8,0x20,0xF9,0x26,0xB6,0xE9,0xFF};			// 赵
+u8 x_qian[1][8]={0xFE,0x10,0x10,0x7E,0x10,0x10,0x10,0xFF};			// 钱
+u8 x_sun[1][8]={0xE4,0x64,0x56,0x77,0xD5,0x55,0x65,0xCC};				// 孙
+u8 x_li[1][8]={0x10,0xFF,0x56,0xFE,0x4,0xFF,0x10,0x30};					// 李
+u8 x_zhou[1][8]={0x7F,0x49,0x5D,0x7F,0x5D,0x55,0x5D,0x83};			// 周
+u8 x_wu[1][8]={0x7E,0x42,0x7E,0x7E,0x10,0xFF,0x28,0xC7};				// 吴
+u8 x_zheng[1][8]={0x57,0xF5,0x26,0xF6,0x25,0x65,0xD7,0x84};			// 郑
+u8 x_wang[1][8]={0xFE,0x10,0x10,0x7E,0x10,0x10,0x10,0xFF};			// 王
+u8 x_feng[1][8]={0x9E,0xD2,0x52,0x52,0x5F,0x7D,0x81,0x86};			// 冯
+u8 x_chen[1][8] = {0xE8,0xDF,0xD4,0xD5,0xBF,0xFF,0x95,0x8C};		// 陈
+u8 x_wei[1][8] = {0xFE,0x12,0x12,0x12,0x16,0x14,0x10,0xFF};			// 卫
+u8 x_shen[1][8] = {0xC4,0x7F,0x89,0xCC,0x4C,0x4C,0xD5,0xA7};		// 沈
+
+
+u8 xian[1][8] = {0x50, 0x7E, 0x90, 0xFF, 0x28, 0x28, 0x49, 0x8F};			// 先
+u8 sheng[1][8] = {0x50, 0x90, 0xFE, 0x10, 0x7E, 0x10, 0x10, 0xFF};		// 生
+u8 nv[1][8] = {0x30, 0x20, 0xFF, 0x64, 0x44, 0x38, 0x1C, 0xE2};				// 女
+u8 shi[1][8] = {0x10, 0x10, 0x10, 0xFE, 0x10, 0x10, 0x10, 0x7C};			// 士
+
+u8 huan[1][8]={0x10,0x1F,0xF5,0x36,0xA4,0x64,0xAA,0x11};				// 欢
+u8 ying[1][8]={0x10,0xA7,0x25,0xA5,0xB6,0xA4,0x44,0x3F};				// 迎
+u8 guang[1][8]={0x10,0x54,0x38,0xFF,0x28,0x28,0x49,0x8E};				// 光
+u8 lin[1][8]={0x50,0x5F,0xD4,0xE0,0xDF,0x55,0x5F,0x00};					// 临
+
+u8 qing[1][8]={0x84,0x5F,0x2E,0xDF,0x4E,0x4E,0x6E,0x4A};				// 请
+u8 kan[1][8]={0x7E,0x7E,0xFF,0x3E,0x7E,0xA2,0x3E,0x3E};					// 看
+u8 zhe[1][8]={0x44,0x5F,0xDA,0x4C,0x4E,0x5B,0xE1,0x9F};					// 这
+u8 li[1][8]={0x7E,0x7E,0x7E,0x7E,0x8,0x7E,0x8,0xFF};						// 里
+
+u8 huan1[1][8] = {0x80,0x80,0x80,0xFC,0x04,0x08,0x40,0x40};				// 欢
+u8 huan2[1][8] = {0x40,0xA0,0xA0,0x10,0x10,0x08,0x04,0x02};
+u8 huan3[1][8] = {0x00,0x00,0xFC,0x04,0x05,0x49,0x2A,0x14};
+u8 huan4[1][8] = {0x10,0x28,0x24,0x45,0x81,0x02,0x04,0x08};
+
+u8 ying1[1][8] = {0x00,0x80,0x3C,0x24,0x24,0x24,0x24,0x24};				// 迎
+u8 ying2[1][8] = {0x24,0xB4,0x28,0x20,0x20,0x20,0xFE,0x00};
+u8 ying3[1][8] = {0x00,0x20,0x13,0x12,0x02,0x02,0xF2,0x12};
+u8 ying4[1][8] = {0x12,0x12,0x13,0x12,0x10,0x28,0x47,0x00};
+
+u8 kong[1][8]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};		// 空
+u8 zero[1][8]={0x00,0x38,0x44,0x44,0x44,0x44,0x44,0x38};		// 0
+u8 one[1][8]={0x00,0x08,0x18,0x08,0x08,0x08,0x08,0x1C};			// 1
+u8 two[1][8]={0x00,0x18,0x24,0x04,0x08,0x10,0x20,0x3C};			// 2
+u8 three[1][8]={0x00,0x18,0x24,0x04,0x18,0x04,0x24,0x18};		// 3
+u8 four[1][8]={0x00,0x0C,0x14,0x24,0x44,0x7E,0x04,0x04};		// 4
+u8 five[1][8]={0x00,0x7C,0x40,0x40,0x78,0x04,0x44,0x38};		// 5
+u8 six[1][8]={0x00,0x10,0x20,0x40,0x78,0x44,0x44,0x38};			// 6
+u8 seven[1][8]={0x00,0x7E,0x04,0x08,0x10,0x10,0x10,0x10};		// 7
+u8 eight[1][8]={0x00,0x38,0x44,0x44,0x38,0x44,0x44,0x38};		// 8
+u8 nine[1][8]={0x00,0x38,0x44,0x44,0x3C,0x08,0x10,0x20};		// 9
+
+
+u8 z[1][8]={0x00,0x7E,0x04,0x08,0x10,0x20,0x7E,0x00};	//Z:
+u8 y[1][8]={0x00,0x82,0x44,0x38,0x10,0x10,0x10,0x10};	//Y:
+u8 x[1][8]={0x00,0x82,0x44,0x27,0x10,0x28,0x44,0x82};	//X:
+	
+u8 w[1][8]={0x00,0x00,0x92,0x92,0x92,0x92,0x54,0x28};//W:
+u8 v[1][8]={0x00,0x44,0x44,0x44,0x44,0x44,0x28,0x10};	//V:
+u8 u[1][8]={0x00,0x82,0x82,0x82,0x82,0x82,0x44,0x38};	//U:
+u8 T[1][8]={0x00,0xFE,0x10,0x10,0x10,0x10,0x10,0x10};	//T:
+
+u8 s[1][8]={0x38,0x44,0x40,0x20,0x18,0x04,0x44,0x38};//S:
+u8 r[1][8]={0x78,0x44,0x44,0x48,0x70,0x48,0x44,0x42};	//R:
+u8 q[1][8]={0x38,0x44,0x44,0x44,0x44,0x5C,0x44,0x3A};	//Q:
+u8 p[1][8]={0x70,0x48,0x48,0x48,0x70,0x40,0x40,0x40};	//P:
+
+	
+u8 o[1][8]={0x38,0x44,0x44,0x44,0x44,0x44,0x38,0x00};//0:
+u8 n[1][8]={0x00,0x84,0xC4,0xA4,0x94,0x8C,0x84,0x00};	//N:
+u8 m[1][8]={0x00,0x44,0xAA,0x92,0x92,0x92,0x92,0x00};	//M:
+u8 l[1][8]={0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x3E};	//L:
+	
+u8 k[1][8]={0x44,0x48,0x50,0x60,0x60,0x50,0x48,0x44};//K:
+u8 J[1][8]={0x7E,0x08,0x08,0x08,0x08,0x08,0x28,0x10};	//J:
+u8 I[1][8]={0x00,0x7C,0x10,0x10,0x10,0x10,0x7C,0x00};	//I:
+u8 h[1][8]={0x84,0x84,0x84,0xFC,0xFC,0x84,0x84,0x84};	//H:
+	
+u8 g[1][8]={0x038,0x40,0x80,0x80,0x9C,0x84,0x44,0x38};//G:
+u8 f[1][8]={0x7C,0x40,0x40,0x7C,0x40,0x40,0x40,0x40};	//F:
+u8 e[1][8]={0x00,0x7C,0x40,0x40,0x7C,0x40,0x40,0x7C};	//E:
+u8 d[1][8]={0x70,0x48,0x44,0x44,0x44,0x44,0x48,0x70};	//D:
+
+u8 c[1][8]={0x38,0x44,0x80,0x80,0x80,0x80,0x44,0x38};	//C:
+u8 b[1][8]={0x78,0x44,0x44,0x48,0x78,0x44,0x44,0x78};	//B:
+u8 a[1][8]={0x10,0x28,0x44,0x44,0x7C,0x44,0x44,0x44};	//A:	
+
+u8 front[1][8]={0x10,0x38,0x7C,0xFE,0x38,0x38,0x38,0x38};
+u8 back[1][8]={0x38,0x38,0x38,0x38,0xFE,0x7C,0x38,0x10};
+u8 left[1][8]={0x00,0x10,0x30,0x7F,0xFF,0x7F,0x30,0x10};
+u8 right[1][8]={0x00,0x08,0x0C,0xFE,0xFF,0xFE,0x0C,0x08};
+
+
+
+
+
+	
+void Max7219_Init(void)
+{    	 
+  GPIO_InitTypeDef  GPIO_InitStructure = {0};
+
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+
+  //GPIOF9,F10初始化设置
+	
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_4 | GPIO_PIN_5, GPIO_PIN_RESET);
+	
+	GPIO_InitStructure.Pin = GPIO_PIN_9;
+  GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStructure.Pull = GPIO_PULLUP;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
+	
+	
+	GPIO_InitStructure.Pin = GPIO_PIN_4 | GPIO_PIN_5;
+  GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStructure.Pull = GPIO_PULLUP;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStructure);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_4 | GPIO_PIN_5, GPIO_PIN_SET);
+}
+
+void Init_MAX7219(void)
+{ 
+//  Write_Max7219(0x09, 0x00,0x09, 0x00);       //译码方式：BCD码
+//  Write_Max7219(0x0a, 0x03,0x0a, 0x03);       //亮度 
+//  Write_Max7219(0x0b, 0x07,0x0b, 0x07);       //扫描界限；8个数码管显示
+//  Write_Max7219(0x0c, 0x01,0x0c, 0x01);       //掉电模式：0，普通模式：1
+//  Write_Max7219(0x0f, 0x00,0x0f, 0x00);       //显示测试：1；测试结束，正常显示：0
+//  */
+	u8  i;
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_RESET);
+  for(i = 0; i < count; i++)
+  {
+    Write_Max7219_byte(0x09); //译码方式：BCD码 
+    Write_Max7219_byte(0x00);  
+  }
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_SET);
+  delay_us(20);
+	
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_RESET);
+  for(i=0;i<count;i++)
+  {
+    Write_Max7219_byte(0x0a); //亮度    
+    Write_Max7219_byte(0x03);     		
+  }
+//  Max7219_pinCS=1;
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_SET);
+	delay_us(20);
+//	HAL_Delay(1/50);
+	
+//   Max7219_pinCS=0;
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_RESET);
+  for(i=0; i < count; i++)
+  {
+    Write_Max7219_byte(0x0b); // //扫描界限；8个数码管显示  
+    Write_Max7219_byte(0x07);     
+  }
+//  Max7219_pinCS=1;
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_SET);
+	delay_us(20);
+//	HAL_Delay(1/50);
+	
+//  Max7219_pinCS=0;
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_RESET);
+  for(i=0; i<count; i++)
+  {
+    Write_Max7219_byte(0x0c); //   //掉电模式：0，普通模式：1
+    Write_Max7219_byte(0x01);    
+  }
+//  Max7219_pinCS=1;
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_SET);
+//	HAL_Delay(1/50);
+	delay_us(20);
+	
+//  Max7219_pinCS=0;
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_RESET);
+  for(i=0; i<count; i++)
+  {
+    Write_Max7219_byte(0x0f); //显示测试：1；测试结束，正常显示：0
+    Write_Max7219_byte(0x00);    
+  }
+//  Max7219_pinCS=1;
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_SET);
+//   HAL_Delay(1/50);
+	delay_us(20);
+}
+void Write_Max7219(u8 address1,u8 dat1,u8 address2,u8 dat2)
+{ 
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_RESET);
+	Write_Max7219_byte(address1);           //写入地址，即数码管编号
+  Write_Max7219_byte(dat1);              //写入数据，即数码管显示数字 
+  Write_Max7219_byte(address2);           //写入地址，即数码管编号
+  Write_Max7219_byte(dat2);      //写入数据，即数码管显示数字 
+	delay_us(20);
+      
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_SET);	
+}
+//--------------------------------------------
+//功能：向MAX7219(U3)写入字节
+//入口参数：DATA 
+//出口参数：无
+//说明：
+void Write_Max7219_byte(u8 DATA)         
+{
+	u8 i, t;    
+	for(i = 8; i >= 1; i--)
+	{		  
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_4, GPIO_PIN_RESET);
+		delay_us(6);	
+		t = DATA&0x80;
+		if(t == 0x80) 
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+		if(t==0) 
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+		DATA = DATA<<1;
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_4, GPIO_PIN_SET);
+		delay_us(6);
+	}                                 
+}
+
+void load_interface(void)
+{
+	u8 disp[12][8];
+	u8 i, j1, j2;
+	
+	for(j1 = 0; j1<8;j1++)disp[0][j1]=lin[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[1][j1]=guang[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[2][j1]=ying[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[3][j1]=huan[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[4][j1]=k[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[5][j1]=o[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[6][j1]=o[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[7][j1]=l[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[8][j1]=front[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[9][j1]=front[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[10][j1]=front[0][j1];
+	for(j1 = 0; j1<8;j1++)disp[11][j1]=front[0][j1];
+	
+	for(i = 1; i < 9; i++)
+	{
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_RESET);
+    for(j2 = 0; j2 < count; j2++)
+    {
+			Write_Max7219_byte(i);           //写入地址，即数码管编号
+			delay_us(20);
+			Write_Max7219_byte(disp[count - 1 - j2][i - 1]);              //写入数据，即数码管显示数字 
+			delay_us(20);
+		} 
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_SET);		
+	}
+	HAL_Delay(100); 
+}
+
+void Max7219_Display()
+{
+	u8 disp[12][8];
+	u8 i, j1, j2;
+	switch(buffer1[0])
+	{
+		case '1':
+		{
+			for(j1 = 0; j1<8;j1++)disp[0][j1]=one[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[1][j1]=zero[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[2][j1]=one[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[3][j1]=one[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[4][j1]=kong[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[5][j1]=sheng[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[6][j1]=xian[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[7][j1]=su[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[8][j1]=front[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[9][j1]=front[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[10][j1]=front[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[11][j1]=front[0][j1];
+		}	break;
+		case '2':
+		{
+			for(j1 = 0; j1<8;j1++)disp[0][j1]=one[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[1][j1]=zero[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[2][j1]=two[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[3][j1]=one[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[4][j1]=kong[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[5][j1]=sheng[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[6][j1]=xian[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[7][j1]=yun[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[8][j1]=left[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[9][j1]=left[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[10][j1]=left[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[11][j1]=left[0][j1];
+		}	break;
+		case '3':
+		{
+			for(j1 = 0; j1<8;j1++)disp[0][j1]=one[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[1][j1]=zero[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[2][j1]=three[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[3][j1]=one[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[4][j1]=kong[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[5][j1]=shi[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[6][j1]=nv[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[7][j1]=jing[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[8][j1]=right[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[9][j1]=right[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[10][j1]=right[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[11][j1]=right[0][j1];
+		}	break;
+		case '4':
+		{
+			for(j1 = 0; j1<8;j1++)disp[0][j1]=x_zhao[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[1][j1]=x_qian[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[2][j1]=x_sun[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[3][j1]=x_li[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[4][j1]=x_zhou[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[5][j1]=x_wu[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[6][j1]=x_zheng[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[7][j1]=x_wang[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[8][j1]=x_feng[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[9][j1]=x_chen[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[10][j1]=x_wei[0][j1];
+			for(j1 = 0; j1<8;j1++)disp[11][j1]=x_shen[0][j1];
+		}	break;
+		
+	}
+
+
+	for(i = 1; i < 9; i++)
+	{
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_RESET);
+    for(j2 = 0; j2 < count; j2++)
+    {
+			Write_Max7219_byte(i);           //写入地址，即数码管编号
+			delay_us(20);
+			Write_Max7219_byte(disp[count - 1 - j2][i - 1]);              //写入数据，即数码管显示数字 
+			delay_us(20);
+		} 
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, GPIO_PIN_SET);		
+	}
+	HAL_Delay(100); 
+//		printf("[\t debug]i = %d\r\n", i);	
+}
+
+
+
