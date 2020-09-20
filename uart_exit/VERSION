@@ -1,0 +1,22 @@
+gwen:
+    at          :   52383f9
+    crypto      :   52383f9
+    espnow      :   52383f9
+    main        :   52383f9
+    net80211    :   52383f9
+    pp          :   52383f9
+    ssl         :   52383f9
+    upgrade     :   52383f9
+    wpa         :   52383f9
+    wpa2        :   52383f9
+    wps         :   52383f9
+
+phy:
+    phy         :   1156_0
+
+gitlab:
+    driver      :   5a2a54b4
+    json        :   f55d5fee
+    lwip        :   5623f48f
+    mbedtls     :   82b93fe5
+    smartconfig :   ea1d4a13(v2.5.5)
