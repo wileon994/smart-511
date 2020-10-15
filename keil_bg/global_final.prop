@@ -76,23 +76,20 @@ template.cpp="#define","#define |";"#if","#if |\r\n\r\n#endif";\\
     "void","void | ();\r\n";"while","while (|)\r\n{\r\n}";\\
     
 font.monospace.cpp=Courier New
-font.acpmonofontname.cpp=Courier New
-font.acppropfontname.cpp=Courier New
-style.cpp.32=font:Courier New,size:15,fore:#FFFFFF,back:#0B161D
-style.cpp.4=font:Courier New,size:15,fore:#D50000,back:#0B161D
-style.cpp.10=font:Courier New,size:15,fore:#0080FF,back:#0B161D
-style.cpp.1=font:Courier New,size:15,fore:#00D500,back:#0B161D
-style.cpp.2=font:Courier New,size:15,fore:#00D500,back:#0B161D
-style.cpp.5=font:Courier New,size:15,fore:#0080FF,back:#0B161D,bold
-style.cpp.6=font:Courier New,size:15,fore:#D50000,back:#0B161D
-style.cpp.11=font:Courier New,size:15,fore:#FFFFFF,back:#0B161D
-style.cpp.9=font:Courier New,size:15,fore:#D5D500,back:#0B161D
-style.cpp.7=font:Courier New,size:15,fore:#D50000,back:#0B161D
-style.cpp.34=font:Courier New,size:15,fore:#FFFFFF,back:#20FFFF
-style.cpp.35=font:Courier New,size:15,fore:#D50000,back:#FFFFFF
-style.cpp.16=font:Courier New,size:15,fore:#D50000,back:#FFFFFF
-style.cpp.12=font:Courier New,size:15,fore:#FFFFFF,back:#E0C0E0
-style.cpp.86=font:Courier New,size:15,fore:#696969,back:#FFFFFF
+style.cpp.32=font:Courier New,size:15,fore:#F8F8F8,back:#0B161D
+style.cpp.4=font:Courier New,size:15,fore:#FF3A83,back:#0B161D
+style.cpp.10=font:Courier New,size:15,fore:#FFAA00,back:#0B161D
+style.cpp.1=font:Courier New,size:15,fore:#00FF00,back:#0B161D
+style.cpp.2=font:Courier New,size:15,fore:#1E9AE0,back:#0B161D
+style.cpp.5=font:Courier New,size:15,fore:#FFAA00,back:#0B161D,bold
+style.cpp.6=font:Courier New,size:15,fore:#55E439,back:#0B161D
+style.cpp.11=font:Courier New,size:15,fore:#F8F8F8,back:#0B161D
+style.cpp.9=font:Courier New,size:15,fore:#FFAA00,back:#0B161D
+style.cpp.7=font:Courier New,size:15,fore:#55E439,back:#0B161D
+style.cpp.34=font:Courier New,size:15,fore:#500000,back:#20FFFF
+style.cpp.35=font:Courier New,size:15,fore:#FF0000,back:#FFFFFF
+style.cpp.16=font:Courier New,size:15,fore:#B00040,back:#FFFFFF
+style.cpp.12=font:Courier New,size:15,fore:#000000,back:#E0C0E0
 
 
 # Asm Editor files
