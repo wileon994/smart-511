@@ -1,0 +1,38 @@
+备份默认主题文件
+首先找到Keil安装目录（以下以此安装目录为例）：D:\Software\Keil 
+可以看到，目录下存在如下几个文件夹/文件： 
+- ARM\ 
+- Eclipse\ 
+- UV4\ 
+- TOOLS.INI 
+- Uninstall.exe
+
+P.S. 例子为UV4，UV5有所不同，但接下来操作相同
+
+打开UV4文件夹，找到如下文件： 
+- arm.prop 
+- global.prop 
+- global.prop.def
+
+将这三个文件拖到其他位置，或修改其拓展名为任意（比如*.bak），防止修改失败后不能恢复。
+
+P.S. 如果只找到global.prop.def文件，说明你还未修改过默认字体等设置，将global.prop.def文件备份就好，不会影响接下来的操作。
+
+开始操作
+安装微软雅黑 Consolas Hybrid字体
+解压主题修改压缩文件 
+发现其中包含文件名为：MSYHMONO.ttf的字体文件 
+找到系统字体存放目录，一般为C:\Windows\Fonts 
+将字体文件拖入该文件夹，弹出安装字体提示，确认 
+至此，微软雅黑 Consolas Hybrid已经成功安装如你的系统
+
+替换主题文件
+复制下载的压缩包中剩余的三个文件： 
+- arm.prop 
+- global.prop 
+- global.prop.def
+
+找到之前备份过该三文件的位置，即UV4文件夹，将三者粘贴在其中
+
+完成
+--------------------- 
