@@ -13,4 +13,5 @@ ___
   * fixed length
   * unfixed length
 + very easy
-![Image text](https://raw.githubusercontent.com/Jackystu/smart-511/master/img-folder/dog.jpg)
+
+![Image text](https://github.com/Jackystu/smart-511/blob/master/img-folder/dog.jpg)
