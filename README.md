@@ -6,7 +6,7 @@ ___
   * fixed length
   * unfixed length
 + very easy
-+ very nice
++ very very nice
 
 ## 代码
 + you can use this examples to conduct uart receive and tranmit for esp8266.
